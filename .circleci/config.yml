@@ -4,8 +4,31 @@ jobs:
     docker:
       - image: alpine:3.7
     steps:
+      - checkout
       - run:
-          name: The First Step
+          name: The First Step (print notification and list all the files in folder after pull from repo)
           command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
+            echo 'Start deploy'
+            ls -al
+      - run:
+          name: Running in a Unique Container
+          command: |
+            node -v
+  CompleteJobs:
+    docker:
+      - image: alpine:3.7
+    steps:
+      - run:
+          name: Approval Complete
+          command: |
+            echo 'Do work once the approval has completed'
+
+#work flow define
+workflows:
+  version: 2
+  First_workflow:
+    jobs:
+      - build
+      - CompleteJobs:
+          requires:
+            - build
