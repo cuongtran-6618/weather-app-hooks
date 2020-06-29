@@ -8,12 +8,21 @@ jobs:
       - run:
           name: The First Step (print notification and list all the files in folder after pull from repo)
           command: |
-            echo 'Start deploy'
+            echo 'Start deploy with docker'
             ls -al
-      - run:
-          name: Running in a Unique Container
-          command: |
-            node -v
+
+  BuildWithNode:
+    # pre-built images: https://circleci.com/docs/2.0/circleci-images/
+    docker:
+        - image: circleci/node:10-browsers
+      steps:
+        - checkout
+        - run:
+            name: Running in a Unique Container
+            command: |
+              echo 'Running delivery pipeline with node'
+              node -v
+      
   CompleteJobs:
     docker:
       - image: alpine:3.7
@@ -29,6 +38,7 @@ workflows:
   First_workflow:
     jobs:
       - build
+      - BuildWithNode
       - CompleteJobs:
           requires:
             - build
